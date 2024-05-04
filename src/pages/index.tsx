@@ -26,6 +26,19 @@ export default function Home() {
 
   return (
     <>
+      <div className="flex flex-col items-center justify-center mt-10">
+        <div className="flex flex-col items-center justify-center mt-4">
+          <h1 className="text-2xl font-bold">Want to Predict the Tool Life?</h1>
+          <h2 className="text-xl font-bold">We got you covered!</h2>
+        </div>
+        <div className="flex flex-col items-center justify-center mt-4">
+          <Link href="/dashboard" legacyBehavior>
+            <a className="border border-black rounded-md px-4 py-2">
+              Go to dashboard
+            </a>
+          </Link>
+        </div>
+      </div>
       <Carousel autoplay className="border">
         <div className="">
           <Image
@@ -60,19 +73,6 @@ export default function Home() {
           </div>
         </div>
       </Carousel>
-      <div className="flex flex-col items-center justify-center mt-10">
-        <div className="flex flex-col items-center justify-center mt-4">
-          <h1 className="text-2xl font-bold">Welcome to my website</h1>
-          <h2 className="text-xl font-bold">Let&apos;s Begin the Search</h2>
-        </div>
-        <div className="flex flex-col items-center justify-center mt-4">
-          <Link href="/dashboard" legacyBehavior>
-            <a className="border border-black rounded-md px-4 py-2">
-              Go to dashboard
-            </a>
-          </Link>
-        </div>
-      </div>
     </>
   );
 }

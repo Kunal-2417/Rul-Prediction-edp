@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import generateBrowserFingerprint from "@/util/GenerateFingerprint";
 import { getSocket, connectSocket } from "@/util/Socket";
 import { message } from "antd";
+import PhotoUploader from "@/components/PhotoUploader";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -12,6 +13,7 @@ const Dashboard = () => {
   const [results, setResults] = useState([] as any);
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
+  const [addedPhotos,setAddedPhotos] = useState([]);
   const { user, ready, setUser, token, refreshToken } = useContext(UserContext);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -103,34 +105,15 @@ const Dashboard = () => {
     <>
       {contextHolder}
       <div className="flex flex-col items-center justify-center mt-10 ">
-        <h1 className="text-3xl font-bold">Search</h1>
-        <p className="text-gray-500">Type your Query</p>
+        <h1 className="text-3xl font-bold">Upload Tool's Data</h1>
+        <p className="text-gray-500">upload</p>
         <form className="flex flex-col mt-2 rounded-2xl w-fit mx-auto  border px-10 py-5 bg-gray-100 ">
           <div className="flex items-center bg-white px-2 rounded-2xl h-12 border shadow-lg">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-              />
-            </svg>
-
-            <input
-              type="text"
-              id="query"
-              className="  w-full rounded-2xl px-4 py-2 focus:outline-none"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Query"
-              required
-            />
+            {/* <PhotoUploader
+              addedPhotos={addedPhotos}
+              setAddedPhotos={setAddedPhotos}
+            /> */}
+            <input type="file" />
           </div>
           <div className="justify-between border gap-2 rounded-full  w-full sm:flex">
             <button
@@ -138,14 +121,7 @@ const Dashboard = () => {
               className="primary mt-5 hover:shadow-2xl"
               onClick={handleBSubmit}
             >
-              Bing Search
-            </button>
-            <button
-              type="submit"
-              className="primary mt-5 hover:shadow-2xl"
-              onClick={handleGSubmit}
-            >
-              Google&nbsp;Search
+              Run Model
             </button>
           </div>
         </form>

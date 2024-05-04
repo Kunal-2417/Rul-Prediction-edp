@@ -39,6 +39,7 @@ router.use(async (req, res, next) => {
 mongoose.connect(process.env.MONGO_URL);
 
 router.post("/login", async (req, res) => {
+  console.log("loginapiCalled")
   const { user, password, fingerPrint, captchaToken } = req.body;
   const ua = uaParser(req.headers["user-agent"]);
 
