@@ -4,6 +4,8 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const app = express();
 const authRouter = require("./routes/auth");
+const multer = require('multer');
+const path = require('path'); 
 // const internalScrappingRouter = require("./scrappers/internalScrapper");
 // const scrappingRouter = require("./routes/scrapping");
 const googleOAuthRouter = require("./routes/googleAuth");
@@ -11,6 +13,7 @@ const requestIp = require("request-ip");
 const verifyToken = require("./middleware/jwtAuth");
 const serviceRouter = require("./routes/services");
 const sessionRouter = require("./routes/sessions");
+const uploadedfileRouter=require("./routes/uploadedfile");
 const mySocket = require("./utils/sockets");
 const bodyParser = require("body-parser");
 const Tokens = require("csrf");
@@ -59,6 +62,8 @@ const csrfProtection = async (req, res, next) => {
 //   next();
 // });
 
+
+
 app.use(express.json());
 app.use(
   cors({
@@ -80,6 +85,8 @@ app.use(
 );
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+const upload = multer({ dest: "uploads/" });
 
 app.post("/csrf-token", function (req, res) {
   var newToken = csrf_tokens.create(secret);
@@ -119,7 +126,12 @@ app.use("/authentication", csrfProtection, authRouter);
 app.use("/api/oauth", googleOAuthRouter);
 // app.use("/scrapping", (verifyToken, csrfProtection), scrappingRouter);
 app.use("/services", serviceRouter);
+
 app.use("/sessions", (verifyToken, csrfProtection), sessionRouter);
+
+// app.use('/uploadfile', upload.single('excelFile'), verifyToken, uploadedfileRouter); 
+app.use('/uploadfile',uploadedfileRouter); 
+// app.use("/uploadfile", upload.single("file"), uploadedfileRouter);
 
 const server = app.listen(4000);
 mySocket(server);
