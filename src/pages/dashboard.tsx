@@ -1,10 +1,13 @@
 import React, { use, useEffect } from "react";
+import * as XLSX from "xlsx"
 import { useState, useContext } from "react";
 import { UserContext } from "@/context/UserContext";
 import { useRouter } from "next/router";
 import generateBrowserFingerprint from "@/util/GenerateFingerprint";
 import { getSocket, connectSocket } from "@/util/Socket";
 import { message } from "antd";
+import axios from 'axios';
+
 import PhotoUploader from "@/components/PhotoUploader";
 
 const Dashboard = () => {
@@ -13,7 +16,7 @@ const Dashboard = () => {
   const [results, setResults] = useState([] as any);
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
-  const [addedPhotos,setAddedPhotos] = useState([]);
+  const [addedPhotos, setAddedPhotos] = useState([]);
   const { user, ready, setUser, token, refreshToken } = useContext(UserContext);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -45,87 +48,122 @@ const Dashboard = () => {
       console.error("Error:Genertating FingerPrint ", error);
     });
 
-  const handleBSubmit = async (e: any) => {
-    e.preventDefault();
-    if (!query) {
-      alert("Please enter a query");
-      message.error("Please enter a query");
-      return;
-    }
-    console.log("userId: ", userId);
-    console.log("query: ", query);
-    console.log("fingerPrint: ", fingerPrint);
+    //onchange state
+  const [excelFile, setExcelFile] = useState(null);
+  const [excelData, setExcelData] = useState(null);
 
-    setLoading(true);
-    try {
-      if (!socket) {
-        socket = connectSocket(token, refreshToken);
-      }
-      socket.emit("Bsearch", { userId, query, fingerPrint });
-      socket.on("Bsearchres", (data: any) => {
-        console.log("data: ", data);
-        setResults(data);
-        setLoading(false);
-      });
-    } catch (error) {
-      console.error("Error: ", error);
+  const handleFile = (e) => {
+    const selectedFile = e.target.files[0];
+    console.log(selectedFile);
+    if (selectedFile) {
+      let reader = new FileReader();
+      reader.readAsArrayBuffer(selectedFile);
+      reader.onload = (e) => {
+        setExcelFile(e.target.result);
+      };
+    } else {
+      setExcelFile(null);
+      console.log("Please select a file first");
     }
   };
-  const handleGSubmit = async (e: any) => {
+
+  const handleFileSubmit = (e) => {
     e.preventDefault();
-    if (!query) {
-      message.error("Please enter a query");
-      return;
-    }
-    console.log("userId: ", userId);
-    console.log("query: ", query);
-    console.log("fingerPrint: ", fingerPrint);
-    setLoading(true);
-    try {
-       if (!socket) {
-         socket = connectSocket(token, refreshToken);
-       }
-      socket.emit("Gsearch", { userId, query, fingerPrint });
-      socket.on("Gsearchres", (data: any) => {
-        console.log("data: ", data);
-        setResults(data);
-        setLoading(false);
-      });
-    } catch (error) {
-      console.error("Error: ", error);
-      setLoading(false);
+    if (excelFile !== null) {
+      try {
+        const workbook = XLSX.read(excelFile, { type: 'buffer' });
+        const workSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[workSheetName];
+        const data = XLSX.utils.sheet_to_json(worksheet);
+        setExcelData(data.slice(0, 10));
+        
+      } catch (error) {
+        console.error("Error reading or parsing the file:", error);
+      }
     }
   };
-  if (!ready || loading) {
-    return <div id="preloader" />;
-  }
-  // if(loading) return <div id="preloader" />;
+
+  const handleRunModel = async (event) => {
+    event.preventDefault();
+    console.log('Running Model', excelData);
+    try {
+      const formData = new FormData();
+      formData.append('file', excelFile); // Append the file to FormData
+      console.log('lunhu', formData)
+
+      const response = await axios.post('/uploadfile/excel', excelData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+
+
+
+
+
+
 
   return (
     <>
       {contextHolder}
-      <div className="flex flex-col items-center justify-center mt-10 ">
+      <div className="flex flex-col items-center justify-center mt-10">
         <h1 className="text-3xl font-bold">Upload Tool's Data</h1>
-        <p className="text-gray-500">upload</p>
-        <form className="flex flex-col mt-2 rounded-2xl w-fit mx-auto  border px-10 py-5 bg-gray-100 ">
-          <div className="flex items-center bg-white px-2 rounded-2xl h-12 border shadow-lg">
-            {/* <PhotoUploader
-              addedPhotos={addedPhotos}
-              setAddedPhotos={setAddedPhotos}
-            /> */}
-            <input type="file" />
-          </div>
-          <div className="justify-between border gap-2 rounded-full  w-full sm:flex">
-            <button
-              type="submit"
-              className="primary mt-5 hover:shadow-2xl"
-              onClick={handleBSubmit}
-            >
-              Run Model
+        <p className="text-gray-500">Upload</p>
+        <form
+          className="flex flex-col mt-2 rounded-2xl w-fit mx-auto border px-10 py-5 bg-gray-100"
+          onSubmit={handleFileSubmit}
+        >
+          <label htmlFor="fileInput" className="flex items-center bg-white px-2 rounded-2xl h-12 border shadow-lg">
+            <input type="file" id="fileInput" className="form-control" required onChange={handleFile} />
+            {excelFile && <span className="ml-2">{excelFile.name}</span>}
+          </label>
+          <div className="justify-between border gap-2 rounded-full w-full sm:flex">
+            <button type="submit" className="primary mt-5 hover:shadow-2xl">
+              Upload
             </button>
           </div>
         </form>
+        <div className="viewer">
+          {excelData ? (
+            <div className="table-responsive">
+              <table className="table">
+              <thead>
+                <tr>
+                  {Object.keys(excelData[0]).map((key)=>(
+                    <th key={key}>{key}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {excelData.map((individualExcelData,index)=>(
+                  <tr key={index}>
+                    {Object.keys(individualExcelData).map((key)=>(
+                      <td key={key}>{individualExcelData[key]}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+              </table>
+            </div>
+          ) : (
+            <div>No file uploaded</div>
+          )}
+        </div>
       </div>
+      {excelData?(
+        <div className="justify-between border gap-2 rounded-full w-full sm:flex">
+          <button className="primary mt-5 hover:shadow-2xl" onClick={handleRunModel}>
+            Run Model
+          </button>
+        </div>
+      ):<></>}
+      
       <div className="sm:p-10 mt-4 ">
         {loading && <p>Loading...</p>}
         {results.length > 0 && !loading ? (
