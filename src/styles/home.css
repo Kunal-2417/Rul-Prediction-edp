@@ -1,0 +1,120 @@
+@keyframes spin {
+    0% {
+        transform: rotateX(0deg) rotateY(0deg);
+    }
+
+    100% {
+        transform: rotateX(360deg) rotateY(360deg);
+    }
+}
+
+@keyframes orbit1 {
+    0% {
+        transform: rotateY(0deg) translateX(150px) rotateX(0deg);
+    }
+
+    100% {
+        transform: rotateY(360deg) translateX(150px) rotateX(360deg);
+    }
+}
+
+@keyframes orbit2 {
+    0% {
+        transform: rotateY(0deg) translateY(150px) rotateX(0deg);
+    }
+
+    100% {
+        transform: rotateY(360deg) translateY(150px) rotateX(360deg);
+    }
+}
+
+@keyframes orbit3 {
+    0% {
+        transform: rotateY(0deg) translateX(150px) rotate(0deg);
+    }
+
+    100% {
+        transform: rotateY(360deg) translateX(150px) rotate(360deg);
+    }
+}
+
+
+.cube {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: spin 10s infinite linear;
+}
+
+.cube__face {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+}
+
+.cube__face--front {
+    transform: translateZ(40px);
+}
+
+.cube__face--back {
+    transform: rotateY(180deg) translateZ(40px);
+}
+
+.cube__face--right {
+    transform: rotateY(90deg) translateZ(40px);
+}
+
+.cube__face--left {
+    transform: rotateY(-90deg) translateZ(40px);
+}
+
+.cube__face--top {
+    transform: rotateX(90deg) translateZ(40px);
+}
+
+.cube__face--bottom {
+    transform: rotateX(-90deg) translateZ(40px);
+}
+
+
+.cube-wrapper {
+    position: relative;
+}
+
+.cube {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+    transform-style: preserve-3d;
+}
+
+.cube1 {
+    animation-name: orbit1;
+}
+
+.cube2 {
+    animation-name: orbit2;
+}
+
+.cube3 {
+    animation-name: orbit3;
+}
+
+.cube__face {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 2px solid #000000;
+}
+
+/* .cube:hover {
+  animation-play-state: paused;
+} */
+
+
+/* Add other styles as before */

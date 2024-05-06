@@ -3,76 +3,58 @@ import Link from 'next/link';
 import React,{useContext} from "react";
 import { Carousel } from "antd";
 import { UserContext } from "@/context/UserContext";
-
-
+import RotatingCubes from "../components/ui/rotating-cube";
+import { TypewriterEffect } from '../components/ui/typewriter-effect';
+import { SparklesCore } from '@/components/ui/sparkles';
 
 export default function Home() {
-  const contentStyle: React.CSSProperties = {
-    height: "30px",
-    color: "#000",
-    lineHeight: "160px",
-    textAlign: "center",
-    position: "absolute",
-    bottom: "0",
-    width: "100%",
-    background: "gray",
-    opacity: "0.15",
-    
-  };
-  const { ready } = useContext(UserContext);
-  if (!ready) {
-    return <div id="preloader" />;
-  }
+  const words = [
+    {
+      text: "Want",
+      className:"text-black dark:text-black text-10 z-0"
+    },
+    {
+      text: "to",
+      className: "text-black dark:text-black z-0"
+    },
+    {
+      text: "Predict",
+      className: "text-black dark:text-black z-0"
+    },
+    {
+      text: "Tool",
+      className: "text-blue-500 dark:text-blue-500 z-0",
+
+    },
+    {
+      text: "Life?",
+      className: "text-blue-500 dark:text-blue-500 z-0",
+    },
+  ];
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center mt-10">
-        <div className="flex flex-col items-center justify-center mt-4">
-          <h1 className="text-2xl font-bold">Want to Predict the Tool Life?</h1>
-          <h2 className="text-xl font-bold">We got you covered!</h2>
-        </div>
-        <div className="flex flex-col items-center justify-center mt-4">
-          <Link href="/dashboard" legacyBehavior>
-            <a className="border border-black rounded-md px-4 py-2">
-              Go to dashboard
-            </a>
-          </Link>
-        </div>
-      </div>
-      <Carousel autoplay className="border">
-        <div className="">
-          <Image
-            src="/images/banner/1.jpg"
-            alt="Picture of the author"
-            width={500}
-            height={500}
-            className="border w-full object-cover xl:h-[500px] sm:h-96 h-48"
-          />
-          <h3 style={contentStyle}></h3>
-        </div>
-        <div>
-          <Image
-            src="/images/banner/2.webp"
-            alt="Picture of the author"
-            width={500}
-            height={500}
-            className="border w-full object-cover xl:h-[500px] sm:h-96 h-48"
-          />
-          <h3 style={contentStyle}></h3>
-        </div>
-        <div>
-          <Image
-            src="/images/banner/3.jpeg"
-            alt="Picture of the author"
-            width={500}
-            height={500}
-            className="border w-full object-cover xl:h-[500px] sm:h-96 h-48"
-          />
-          <div>
-            <h3 style={contentStyle}></h3>
+       
+      <main className="flex  item-center justify-center">
+
+        <div className="flex justify-between mt-8">
+
+          <div className="flex flex-col items-center ">
+            <div className="text-black Z-0">
+              <TypewriterEffect words={words} />
+              <p className="text-gray-600 dark:text-gray-800 text-base  mb-10">
+                We've Got You Covered!
+              </p>
+            </div>
+            <Link href="/dashboard">
+              <button className="mt-0 primary">Go to Dashboard</button>
+            </Link>
+          </div>
+          <div className="index-z bg-green-400 mt-[-50px]">
+            <RotatingCubes />
           </div>
         </div>
-      </Carousel>
+      </main>
     </>
   );
 }
