@@ -12,8 +12,8 @@ import Image from "next/image";
 
 const LoginSign = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("harshbansal699@gmail.com");
-  const [password, setPassword] = useState("12345678");
+  const [email, setEmail] = useState("21bcs093@iiitdmj.ac.in");
+  const [password, setPassword] = useState("Harsh@123");
   const [loading, setLoading] = useState(false);
   const [seePassword, setSeePassword] = useState(false);
   const { setUser, setReady, setToken, ready } =
