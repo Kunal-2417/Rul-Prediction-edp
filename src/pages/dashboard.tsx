@@ -6,7 +6,9 @@ import { useRouter } from "next/router";
 import generateBrowserFingerprint from "@/util/GenerateFingerprint";
 import { getSocket, connectSocket } from "@/util/Socket";
 import axios from 'axios';
-import type { GetProp, UploadFile, UploadProps } from "antd";
+import type { GetProp, UploadFile, UploadProps} from "antd";
+import { Card, Col, Row } from 'antd';
+// import "../styles/globals.css"
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -336,9 +338,24 @@ const props: UploadProps = {
         ) : (
           ""
         )}
-        {results.length === 0 && !loading && (
-          <p className="text-gray-600">No results found</p>
-        )}
+       
+
+
+        <div className="prediction-table">
+          <Row gutter={[16, 16]} justify="center">
+            <Col xs={24} sm={12} md={8} lg={8} xl={6}>
+              <Card title="RUL Prediction" bordered={false}>
+                {/* Content for Prediction 1 */}
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={8} lg={8} xl={6}>
+              <Card title="Class Prediction" bordered={false}>
+                {/* Content for Prediction 2 */}
+              </Card>
+            </Col>
+            {/* Add more Col components for additional predictions */}
+          </Row>
+        </div>
       </div>
     </>
   );
