@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 router.post("/excel", upload.single("file"),  (req, res) => {
-  console.log(req.file);
+//   console.log("fileeeeeee",req.file);
    if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }

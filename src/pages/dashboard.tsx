@@ -19,6 +19,8 @@ import {
   message
 } from "antd";
 
+const { Dragger } = Upload;
+
 const Dashboard = () => {
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -45,7 +47,7 @@ const Dashboard = () => {
   //   socket = connectSocket(token, refreshToken);
   // }
 
-  console.log("user: ", user, ready, redirect);
+  // console.log("user: ", user, ready, redirect);
 
   let fingerPrint = "";
 
@@ -149,15 +151,52 @@ const props: UploadProps = {
       message.error("You can only upload excel or csv file!");
     }
     else{
-      setFileList([...fileList, file]);
+      setFileList([file]);
     }
     return false;
   },
   fileList,
 };
 
-
-
+// useEffect(() => {
+//   if (fileList[0]) {
+//     const selectedFile = fileList[0];
+//     console.log(selectedFile, "rgrhrwrgwegwegwr");
+//     if (selectedFile) {
+//       let reader = new FileReader();
+//       reader.onload = (e) => {
+//         try {
+//           const workbook = XLSX.read(e.target.result, { type: "array" });
+//           const workSheetName = workbook.SheetNames[0];
+//           const worksheet = workbook.Sheets[workSheetName];
+//           const range = XLSX.utils.decode_range(worksheet["!ref"]);
+//           const firstTenRows = [];
+//           for (
+//             let rowNum = range.s.r;
+//             rowNum <= Math.min(10, range.e.r);
+//             rowNum++
+//           ) {
+//             const row = [];
+//             for (let colNum = range.s.c; colNum <= range.e.c; colNum++) {
+//               const cellAddress = { c: colNum, r: rowNum };
+//               const cellRef = XLSX.utils.encode_cell(cellAddress);
+//               const cellValue = worksheet[cellRef]
+//                 ? worksheet[cellRef].v
+//                 : null;
+//               row.push(cellValue);
+//             }
+//             firstTenRows.push(row);
+//           }
+//           setExcelData(firstTenRows);
+//           console.log(firstTenRows, "excelData");
+//         } catch (error) {
+//           console.error("Error reading or parsing the file:", error);
+//         }
+//       };
+//       reader.readAsArrayBuffer(selectedFile);
+//     }
+//   }
+// }, [fileList]);
 
   return (
     <>
@@ -165,12 +204,12 @@ const props: UploadProps = {
       <div className="flex flex-col items-center justify-center mt-10">
         <h1 className="text-3xl font-bold mb-6">Upload Tool's Data</h1>
         {/* <p className="text-gray-500">Upload</p> */}
-        <form
+        {/* <form
           className="flex flex-col mt-2 rounded-2xl w-fit mx-auto border px-10 py-5 bg-gray-100"
           onSubmit={handleFileSubmit}
         >
           <label
-            htmlFor="fileInput"
+            htmlFor="fileInp999999999ut"
             className="flex items-center bg-white px-2 rounded-2xl h-12 border shadow-lg"
           >
             <input
@@ -180,30 +219,41 @@ const props: UploadProps = {
               required
               onChange={handleFile}
             />
-            {/* {excelFile && <span className="ml-2">{excelFile.name}</span>} */}
           </label>
           <div className="justify-between border gap-2 rounded-full w-full sm:flex">
             <button type="submit" className="primary mt-5 hover:shadow-2xl">
               Upload
             </button>
           </div>
-        </form>
+        </form> */}
         <div>
-          <Upload {...props}>
-            <Button icon={<UploadOutlined />}>Select File</Button>
-          </Upload>
+          <Dragger {...props} maxCount={1}>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+              Click or drag file to this area to upload
+            </p>
+            <p className="ant-upload-hint">
+              Support Excel file or CSV file only. Please follow instruction
+              page for more details.
+            </p>
+          </Dragger>
           <Button
             type="primary"
             onClick={handleUpload}
             disabled={fileList.length === 0}
             loading={uploading}
-            style={{ marginTop: 16, backgroundColor: "#3b82f6" , color: "white"}}
+            style={ fileList.length === 0 ? 
+              { marginTop: 16, backgroundColor: "#0000000a", borderColor: "#d9d9d9", color: "#00000040" }
+              : { backgroundColor: "#3b82f6", color: "white"}
+            }
           >
             {uploading ? "Uploading" : "Start Upload"}
           </Button>
         </div>
         <div className="viewer">
-          {excelData ? (
+          {/* {excelData ? (
             <div className="table-responsive">
               <table className="table">
                 <thead>
@@ -226,7 +276,7 @@ const props: UploadProps = {
             </div>
           ) : (
             <div>No file uploaded</div>
-          )}
+          )} */}
         </div>
       </div>
       {excelData ? (
