@@ -1,11 +1,14 @@
 import Sidebar from "@/components/Sidebar";
 import "@/styles/globals.css";
+import "@/styles/home.css";
+
 import type { AppProps } from "next/app";
 import { Layout, Menu, theme } from "antd";
 import PageHeader from "@/components/PageHeader";
 import React from "react";
 import axios from "axios";
 import { UserContextProvider } from "@/context/UserContext";
+import { SparklesCore } from "@/components/ui/sparkles";
 
 const { Header, Content, Footer } = Layout;
 
@@ -30,7 +33,8 @@ export default function App({ Component, pageProps }: AppProps) {
             >
               <PageHeader />
             </Header>
-            <Content style={{ margin: "24px 1px 0" }}>
+
+            <Content style={{ margin: "24px 14px 0" }}>
               <div
                 style={{
                   // padding: 24,
@@ -43,7 +47,7 @@ export default function App({ Component, pageProps }: AppProps) {
               </div>
             </Content>
             <Footer style={{ textAlign: "center" }}>
-              Scrapper ©2023 Created by Harsh
+              Predictor ©2024 Created by Harsh and Gagan
             </Footer>
           </Layout>
         </Layout>
