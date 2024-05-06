@@ -25,13 +25,13 @@ const { Dragger } = Upload;
 
 const Dashboard = () => {
   const router = useRouter();
-  const [query, setQuery] = useState("");
+  // const [query, setQuery] = useState("");
   const [results, setResults] = useState([] as any);
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
-  const [addedPhotos, setAddedPhotos] = useState([]);
   const { user, ready, setUser, token, refreshToken } = useContext(UserContext);
   const [messageApi, contextHolder] = message.useMessage();
+  const [rulPredicted,setRulPredicted]=useState();
 
   useEffect(() => {
     if (!ready) return;
@@ -62,59 +62,7 @@ const Dashboard = () => {
     });
 
     //onchange state
-  const [excelFile, setExcelFile] = useState(null);
-  const [excelData, setExcelData] = useState(null);
 
-  const handleFile = (e) => {
-    const selectedFile = e.target.files[0];
-    console.log(selectedFile);
-    if (selectedFile) {
-      let reader = new FileReader();
-      reader.readAsArrayBuffer(selectedFile);
-      reader.onload = (e) => {
-        setExcelFile(e.target.result);
-      };
-    } else {
-      setExcelFile(null);
-      console.log("Please select a file first");
-    }
-  };
-
-  const handleFileSubmit = (e) => {
-    e.preventDefault();
-    if (excelFile !== null) {
-      try {
-        const workbook = XLSX.read(excelFile, { type: 'buffer' });
-        const workSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[workSheetName];
-        const data = XLSX.utils.sheet_to_json(worksheet);
-        setExcelData(data.slice(0, 10));
-        
-      } catch (error) {
-        console.error("Error reading or parsing the file:", error);
-      }
-    }
-  };
-
-  const handleRunModel = async (event) => {
-    event.preventDefault();
-    console.log('Running Model', excelData);
-    try {
-      const formData = new FormData();
-      formData.append('file', excelFile); // Append the file to FormData
-      console.log('lunhu', formData)
-
-      const response = await axios.post('/uploadfile/excel', excelData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      console.log(response.data);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
-  };
 const [fileList, setFileList] = useState<UploadFile[]>([]);
 const [uploading, setUploading] = useState(false);
 
@@ -127,6 +75,8 @@ const handleUpload = async () => {
   setUploading(true);
   try {
     const response = await axios.post("/uploadfile/excel", formData);
+    console.log(response)
+    setRulPredicted(response.data.dataa);
     setFileList([]);
     message.success("upload successfully.");
     console.log("File uploaded successfully");
@@ -281,7 +231,7 @@ const props: UploadProps = {
           )} */}
         </div>
       </div>
-      {excelData ? (
+      {/* {excelData ? (
         <div className="justify-between border gap-2 rounded-full w-full sm:flex">
           <button
             className="primary mt-5 hover:shadow-2xl"
@@ -292,7 +242,7 @@ const props: UploadProps = {
         </div>
       ) : (
         <></>
-      )}
+      )} */}
 
       <div className="sm:p-10 mt-4 ">
         {loading && <p>Loading...</p>}
@@ -341,21 +291,15 @@ const props: UploadProps = {
        
 
 
-        <div className="prediction-table">
-          <Row gutter={[16, 16]} justify="center">
-            <Col xs={24} sm={12} md={8} lg={8} xl={6}>
-              <Card title="RUL Prediction" bordered={false}>
-                {/* Content for Prediction 1 */}
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} md={8} lg={8} xl={6}>
-              <Card title="Class Prediction" bordered={false}>
-                {/* Content for Prediction 2 */}
-              </Card>
-            </Col>
-            {/* Add more Col components for additional predictions */}
+       {(rulPredicted || uploading )&& <div className="prediction-table">
+          <Row gutter={16}>
+              <Col span={16}>
+                <Card title="RUL Value" bordered={false} loading={uploading}>
+                  {rulPredicted}
+                </Card>
+              </Col>
           </Row>
-        </div>
+        </div>}
       </div>
     </>
   );
