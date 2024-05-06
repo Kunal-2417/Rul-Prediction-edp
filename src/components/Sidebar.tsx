@@ -4,9 +4,10 @@ import {
   HomeFilled,
   UserOutlined,
   DashboardFilled,
-  HistoryOutlined,
+  // HistoryOutlined,
   PoweroffOutlined,
   LoginOutlined,
+  ReadOutlined,
 } from "@ant-design/icons";
 import { Layout } from "antd";
 import { useRouter } from "next/router";
@@ -67,7 +68,7 @@ const Sidebar = () => {
       ? { key: "/dashboard", icon: <DashboardFilled />, label: "Dashboard" }
       : null,
     user
-      ? { key: "/history", icon: <HistoryOutlined />, label: "History" }
+      ? { key: "/instructions", icon: <ReadOutlined />, label: "Instructions" }
       : null,
     user ? { key: "/profile", icon: <UserOutlined />, label: "Profile" } : null,
     {
@@ -114,7 +115,7 @@ const Sidebar = () => {
         <div className="demo-logo-vertical mb-5">
           <div className="p-1">
             <Image
-              src="https://avatars.githubusercontent.com/u/28140896?s=280&v=4"
+              src="/rul-logo.png"
               alt="logo"
               width={0}
               height={0}
