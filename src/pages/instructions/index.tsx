@@ -75,18 +75,7 @@ const HistoryPage = () => {
     <>
       <div className="flex flex-col text-center border-y shadow-lg py-8  items-center justify-center mb-6 ">
         <div className="flex justify-between w-3/4 px-10 py-4 gap-4">
-          <h2 className="text-lg font-semibold">Filters</h2>
-          <button
-            className="bg-blue-400 text-white px-4 py-2 rounded-xl "
-            onClick={() => {
-              setSearchedFrom("");
-              setFromDate("");
-              setToDate("");
-              setSearch("");
-            }}
-          >
-            Clear Filters
-          </button>
+          <h2 className="text-lg font-semibold"></h2>
         </div>
         <div className="border-2 border-gray-300 p-2 lg:p-4 lg:w-3/4  rounded-xl mx-1 shadow-md">
           <div className="grid md:flex content-center content-between md:justify-between text-center gap-2">

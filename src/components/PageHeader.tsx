@@ -2,12 +2,13 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import {
   DashboardFilled,
-  HistoryOutlined,
+  // HistoryOutlined,
   HomeFilled,
   UserOutlined,
   DownOutlined,
   SettingOutlined,
   LogoutOutlined,
+  ReadOutlined,
 } from "@ant-design/icons";
 import { UserContext } from "@/context/UserContext";
 import { useContext } from "react";
@@ -44,14 +45,14 @@ const PageHeader = () => {
       title = "Dashboard";
       icon = <DashboardFilled />;
       break;
-    case "/history":
-      title = "History";
-      icon = <HistoryOutlined />;
+    case "/instructions":
+      title = "Instructions";
+      icon = <ReadOutlined />;
       break;
-    case "/history/[id]":
-      title = "History";
-      icon = <HistoryOutlined />;
-      break;
+    // case "/history/[id]":
+    //   title = "History";
+    //   icon = <HistoryOutlined />;
+    //   break;
     case "/profile":
       title = "Profile";
       icon = <UserOutlined />;
@@ -85,10 +86,10 @@ const PageHeader = () => {
     },
     {
       key: "2",
-      icon: <HistoryOutlined />,
+      icon: <ReadOutlined />,
       label: (
-        <Link className="" href={"/history"}>
-          Search History
+        <Link className="" href={"/instructions"}>
+          Instructions
         </Link>
       ),
     },

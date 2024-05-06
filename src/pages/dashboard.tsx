@@ -5,10 +5,19 @@ import { UserContext } from "@/context/UserContext";
 import { useRouter } from "next/router";
 import generateBrowserFingerprint from "@/util/GenerateFingerprint";
 import { getSocket, connectSocket } from "@/util/Socket";
-import { message } from "antd";
 import axios from 'axios';
+import type { GetProp, UploadFile, UploadProps } from "antd";
 
-import PhotoUploader from "@/components/PhotoUploader";
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+
+
+import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Select,
+  Upload,
+  message
+} from "antd";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -102,9 +111,50 @@ const Dashboard = () => {
       console.error('Error uploading file:', error);
     }
   };
+const [fileList, setFileList] = useState<UploadFile[]>([]);
+const [uploading, setUploading] = useState(false);
 
+const handleUpload = async () => {
+  const formData = new FormData();
+  console.log(fileList)
+  // fileList.forEach((file) => {
+    formData.append("file", fileList[0] as FileType);
+  // });
+  setUploading(true);
+  try {
+    const response = await axios.post("/uploadfile/excel", formData);
+    setFileList([]);
+    message.success("upload successfully.");
+    console.log("File uploaded successfully");
+  } catch (error) {
+    console.error("Error:", error);
+    message.error("upload failed.");
+  } finally {
+    setUploading(false);
+  }
+  
+};
 
-
+const props: UploadProps = {
+  onRemove: (file) => {
+    const index = fileList.indexOf(file);
+    const newFileList = fileList.slice();
+    newFileList.splice(index, 1);
+    setFileList(newFileList);
+  },
+  beforeUpload: (file) => {
+    const isXLSOrCsv = file.type === "application/vnd.ms-excel" || file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    const isCsv = file.type === "text/csv";
+    if (!isXLSOrCsv && !isCsv) {
+      message.error("You can only upload excel or csv file!");
+    }
+    else{
+      setFileList([...fileList, file]);
+    }
+    return false;
+  },
+  fileList,
+};
 
 
 
@@ -113,15 +163,24 @@ const Dashboard = () => {
     <>
       {contextHolder}
       <div className="flex flex-col items-center justify-center mt-10">
-        <h1 className="text-3xl font-bold">Upload Tool's Data</h1>
-        <p className="text-gray-500">Upload</p>
+        <h1 className="text-3xl font-bold mb-6">Upload Tool's Data</h1>
+        {/* <p className="text-gray-500">Upload</p> */}
         <form
           className="flex flex-col mt-2 rounded-2xl w-fit mx-auto border px-10 py-5 bg-gray-100"
           onSubmit={handleFileSubmit}
         >
-          <label htmlFor="fileInput" className="flex items-center bg-white px-2 rounded-2xl h-12 border shadow-lg">
-            <input type="file" id="fileInput" className="form-control" required onChange={handleFile} />
-            {excelFile && <span className="ml-2">{excelFile.name}</span>}
+          <label
+            htmlFor="fileInput"
+            className="flex items-center bg-white px-2 rounded-2xl h-12 border shadow-lg"
+          >
+            <input
+              type="file"
+              id="fileInput"
+              className="form-control"
+              required
+              onChange={handleFile}
+            />
+            {/* {excelFile && <span className="ml-2">{excelFile.name}</span>} */}
           </label>
           <div className="justify-between border gap-2 rounded-full w-full sm:flex">
             <button type="submit" className="primary mt-5 hover:shadow-2xl">
@@ -129,26 +188,40 @@ const Dashboard = () => {
             </button>
           </div>
         </form>
+        <div>
+          <Upload {...props}>
+            <Button icon={<UploadOutlined />}>Select File</Button>
+          </Upload>
+          <Button
+            type="primary"
+            onClick={handleUpload}
+            disabled={fileList.length === 0}
+            loading={uploading}
+            style={{ marginTop: 16, backgroundColor: "#3b82f6" , color: "white"}}
+          >
+            {uploading ? "Uploading" : "Start Upload"}
+          </Button>
+        </div>
         <div className="viewer">
           {excelData ? (
             <div className="table-responsive">
               <table className="table">
-              <thead>
-                <tr>
-                  {Object.keys(excelData[0]).map((key)=>(
-                    <th key={key}>{key}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {excelData.map((individualExcelData,index)=>(
-                  <tr key={index}>
-                    {Object.keys(individualExcelData).map((key)=>(
-                      <td key={key}>{individualExcelData[key]}</td>
+                <thead>
+                  <tr>
+                    {Object.keys(excelData[0]).map((key) => (
+                      <th key={key}>{key}</th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
+                </thead>
+                <tbody>
+                  {excelData.map((individualExcelData, index) => (
+                    <tr key={index}>
+                      {Object.keys(individualExcelData).map((key) => (
+                        <td key={key}>{individualExcelData[key]}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           ) : (
@@ -156,14 +229,19 @@ const Dashboard = () => {
           )}
         </div>
       </div>
-      {excelData?(
+      {excelData ? (
         <div className="justify-between border gap-2 rounded-full w-full sm:flex">
-          <button className="primary mt-5 hover:shadow-2xl" onClick={handleRunModel}>
+          <button
+            className="primary mt-5 hover:shadow-2xl"
+            onClick={handleRunModel}
+          >
             Run Model
           </button>
         </div>
-      ):<></>}
-      
+      ) : (
+        <></>
+      )}
+
       <div className="sm:p-10 mt-4 ">
         {loading && <p>Loading...</p>}
         {results.length > 0 && !loading ? (
