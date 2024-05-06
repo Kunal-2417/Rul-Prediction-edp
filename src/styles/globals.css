@@ -18,3 +18,10 @@ button.primary {
     background-repeat: no-repeat;
     background-position: center;
 }
+
+
+/* Add this CSS to your stylesheet */
+.panel-header {
+    font-size: 10px;
+    /* Adjust the font size as needed */
+}
