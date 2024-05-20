@@ -316,19 +316,19 @@ import numpy as np
 
 df = pd.read_csv(r"C:\Users\Lenovo\OneDrive\Desktop\edp_finally\region_prediction_models\testing_subset_features_w8.csv")
 predictions = []
-lgbm_pkl_filename=r"C:\Users\Lenovo\OneDrive\Desktop\edp_finally\lgbm_for_whole.pkl"
-lgbmA_pkl_filename=r"C:\Users\Lenovo\Downloads\lgbm_A (1).pkl"
-lgbmB_pkl_filename=r"C:\Users\Lenovo\OneDrive\Desktop\edp_finally\lgbm_B.pkl"
-lgbmC_pkl_filename=r"C:\Users\Lenovo\Downloads\lgbm_C (1).pkl"
+# lgbm_pkl_filename=r"C:\Users\Lenovo\OneDrive\Desktop\edp_finally\lgbm_for_whole.pkl"
+# lgbmA_pkl_filename=r"C:\Users\Lenovo\Downloads\lgbm_A (1).pkl"
+lgbmB_pkl_filename="/home/harsh/Documents/webd/myPractice/EDP/api/pickles/lgbm_B.pkl"
+# lgbmC_pkl_filename=r"C:\Users\Lenovo\Downloads\lgbm_C (1).pkl"
 
-with open(lgbm_pkl_filename,'rb') as file:
-    lgbm_model=pickle.load(file)
-with open(lgbmA_pkl_filename,'rb') as file:
-    lgbmA_model=pickle.load(file)
+# with open(lgbm_pkl_filename,'rb') as file:
+#     lgbm_model=pickle.load(file)
+# with open(lgbmA_pkl_filename,'rb') as file:
+#     lgbmA_model=pickle.load(file)
 with open(lgbmB_pkl_filename,'rb') as file:
     lgbmB_model=pickle.load(file)
-with open(lgbmC_pkl_filename,'rb') as file:
-    lgbmC_model=pickle.load(file)
+# with open(lgbmC_pkl_filename,'rb') as file:
+#     lgbmC_model=pickle.load(file)
 for index, row in df.iterrows():
     single_row_features_array = np.array(row.values)
     prediction = svm_model.predict([single_row_features_array])
